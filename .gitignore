@@ -1,0 +1,6 @@
+.vscode
+.idea
+config.yml
+.env
+
+api/v1/proto/*.go

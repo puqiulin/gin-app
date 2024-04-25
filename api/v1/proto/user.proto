@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package user.v2;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+import "google/api/field_behavior.proto";
+
+option go_package = "app/api/user/v1";
+
+
+service UserService {
+  rpc CreateUser(CreateUserReq) returns (User);
+  rpc DeleteUser(DeleteUsersReq) returns (google.protobuf.Empty);
+  rpc UpdateUser(UpdateUsersReq) returns (User);
+  rpc ListUser(ListUsersReq) returns (ListUsersResp);
+}
+
+message CreateUserReq {
+  string name = 1;
+  string email = 2 [(validate.rules).string.email = true];
+}
+
+message DeleteUsersReq {
+  uint32 id = 1;
+}
+
+message UpdateUsersReq {
+  string name = 1;
+  string email = 2 [(validate.rules).string.email = true];
+}
+
+message ListUsersReq {
+  uint32 limit = 1;
+  uint32 offset = 2;
+}
+
+message User{
+  string name = 1;
+  string email = 2;
+  google.protobuf.Timestamp create_at = 3;
+  google.protobuf.Timestamp update_at = 4;
+}
+
+message ListUsersResp{
+  repeated User users = 1;
+  uint64 count = 2;
+  uint32 limit = 3;
+  uint32 offset = 4;
+}
+
