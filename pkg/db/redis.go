@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"gin-app/pkg/config"
-	"gin-app/pkg/logger"
+	"gin-app/pkg/log"
 	"github.com/go-redis/redis/extra/redisotel/v8"
 	"github.com/go-redis/redis/v8"
 )
@@ -28,7 +28,7 @@ func NewRedis(c *config.RedisConfig) (db *redis.Client, cleanup func(), err erro
 
 	cleanup = func() {
 		if err = db.Close(); err != nil {
-			logger.Log.Error(err)
+			log.Log.Error(err)
 		}
 	}
 

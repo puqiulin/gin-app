@@ -8,9 +8,10 @@ import (
 	"gin-app/internal/middleware"
 	"gin-app/internal/route"
 	"gin-app/pkg/config"
-	"gin-app/pkg/logger"
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
+	"github.com/sirupsen/logrus"
 )
 
 var ProviderSet = wire.NewSet(NewApp)
@@ -18,31 +19,35 @@ var ProviderSet = wire.NewSet(NewApp)
 type App struct {
 	Instance *gin.Engine
 	Config   *config.AppConfig
+	logger   *logrus.Logger
 }
 
-func NewApp(c *config.AppConfig, uh *handler.UserHandler) *App {
-	r := gin.New()
+func NewApp(c *config.AppConfig, l *logrus.Logger, uh *handler.UserHandler) *App {
+	g := gin.New()
 
-	r.Use(gin.Recovery())
-	r.Use(middleware.Logger())
+	g.Use(gin.Recovery())
+	g.Use(middleware.Logger())
 
-	r.Static("/static", "./static")
+	g.Use(static.Serve("/", static.LocalFile("./web/out", true)))
 
-	route.SetupRouter(r, uh)
+	//panic: '/api/user' in new path '/api/user' conflicts with existing wildcard '/*filepath' in existing prefix '/*filepath'
+	//r.Static("/", "./web/.next")
+
+	route.SetupRouter(g, uh)
 
 	return &App{
-		Instance: r,
+		Instance: g,
 		Config:   c,
+		logger:   l,
 	}
 }
 
 func (app *App) Run() error {
 	port := app.Config.Port
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), app.Instance); err != nil {
-		logger.Log.Fatalf("Failed to start server: %v", err)
+		app.logger.Fatalf("Failed to start server: %v", err)
 		return err
 	}
 
-	logger.Log.Infof("Serer running at port: %d...", port)
 	return nil
 }

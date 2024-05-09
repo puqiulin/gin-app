@@ -11,6 +11,8 @@ PROTOC=cd $(API_PATH) && protoc \
 	--go-grpc_out=paths=source_relative:. \
 	--validate_out=paths=source_relative,lang=go:. \
 
+HEALTH_CMD=curl -f http://127.0.0.1:9999/api/v1/healthz
+
 .PHONY: api
 api:
 	$(PROTOC) $(PROTO_FILES)
@@ -20,11 +22,37 @@ tidy:
 	go mod tidy
 
 .PHONY: wire
-wire:
+wire: tidy
 	cd pkg/wire && wire
 
-.PHONY: run
-run: wire
-	go run cmd/main.go
+.PHONY: run-frontend
+run-frontend:
+	cd web && pnpm run dev
 
+.PHONY: run-backend
+run-backend: wire
+	go run .
 
+.PHONY: test
+test:
+	go test ./...
+
+.PHONY: docker-plugin
+docker-plugin:
+	docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+
+.PHONY: docker-deps-up
+docker-deps-up:
+	docker compose -f docker-compose-deps.yml up -d
+
+.PHONY: docker-deps-down
+docker-deps-down:
+	docker compose -f docker-compose-deps.yml down
+
+.PHONY: docker-up
+docker-up: docker-deps-up
+	docker compose -f docker-compose.yml up -d --build
+
+.PHONY: docker-down
+docker-down:
+	docker compose -f docker-compose.yml down

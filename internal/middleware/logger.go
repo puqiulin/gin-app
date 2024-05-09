@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"time"
 
-	"gin-app/pkg/logger"
+	"gin-app/pkg/log"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -29,27 +29,27 @@ func Logger() gin.HandlerFunc {
 		blw := &CustomResponseWriter{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
 		c.Writer = blw
 
-		// Process request
+		// Process requesst
 		c.Next()
 
 		// Collect response data
-		responseBody := blw.body.String()
+		//responseBody := blw.body.String()
 
 		// Ensure Body can be read multiple times
 		if err := c.Request.ParseForm(); err != nil {
-			logger.Log.Errorf("ParseForm error: %v", err)
+			log.Log.Errorf("ParseForm error.tsx: %v", err)
 		}
 
-		logger.Log.WithFields(logrus.Fields{
+		log.Log.WithFields(logrus.Fields{
 			"status_code": c.Writer.Status(),
 			"latency":     time.Since(start),
 			"client_ip":   c.ClientIP(),
 			"method":      c.Request.Method,
 			"path":        c.Request.URL.Path,
 			"params":      c.Request.URL.Query(),
-			"error":       c.Errors.ByType(gin.ErrorTypePrivate).String(),
+			"error.tsx":   c.Errors.ByType(gin.ErrorTypePrivate).String(),
 			"user-agent":  c.Request.UserAgent(),
-			"response":    responseBody,
+			//"response":    responseBody,
 		}).Info("Request details: ")
 	}
 }

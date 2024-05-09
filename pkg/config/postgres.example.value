@@ -2,8 +2,8 @@
   "host": "127.0.0.1",
   "port": 5432,
   "user": "postgres",
-  "password": "@123456",
   "name": "gin-app",
-  "ssl_model": false
+  "password": "@123456",
+  "ssl_model": "disable"
 }
 #'{"host": "127.0.0.1", "port": 5432, "user": "postgres", "password": "@123456", "name": "gin-app", "ssl_model": false}'

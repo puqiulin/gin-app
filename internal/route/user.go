@@ -6,6 +6,6 @@ import (
 )
 
 func UserRoutes(router *gin.RouterGroup, userHandler *handler.UserHandler) {
-	g := router.Group("/user")
-	g.GET("", userHandler.GetUser)
+	user := router.Group("/user")
+	user.GET("", userHandler.GetUser)
 }

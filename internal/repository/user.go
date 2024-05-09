@@ -5,6 +5,7 @@ import (
 
 	"gin-app/internal/model"
 	"github.com/go-redis/redis/v8"
+	"github.com/sirupsen/logrus"
 	"github.com/uptrace/bun"
 )
 
@@ -19,10 +20,11 @@ type UserRepository interface {
 type userRepository struct {
 	db  *bun.DB
 	rdb *redis.Client
+	l   *logrus.Logger
 }
 
-func NewUserRepository(db *bun.DB, rdb *redis.Client) UserRepository {
-	return &userRepository{db: db, rdb: rdb}
+func NewUserRepository(db *bun.DB, rdb *redis.Client, l *logrus.Logger) UserRepository {
+	return &userRepository{db: db, rdb: rdb, l: l}
 }
 
 func (r *userRepository) FindByID(ctx context.Context, id int) (*model.User, error) {
