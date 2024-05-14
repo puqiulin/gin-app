@@ -1,2 +1,0 @@
-GET http://{{host}}:{{port}}/api/user?id=1
-Content-Type: application/json

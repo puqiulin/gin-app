@@ -39,7 +39,7 @@ func (r *userRepository) FindByID(ctx context.Context, id int) (*model.User, err
 
 func (r *userRepository) Create(ctx context.Context, user *model.User) error {
 	query := `INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id`
-	err := r.db.QueryRowContext(ctx, query, user.Name, user.Email).Scan(&user.ID)
+	err := r.db.QueryRowContext(ctx, query, user.Name, user.Email, user.Phone, user.Gender).Scan(&user.ID)
 	return err
 }
 

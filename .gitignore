@@ -5,3 +5,6 @@ config.yml
 
 api/v1/proto/*.go
 gin-app
+
+scripts/.venv
+web/node_modules

@@ -1,0 +1,31 @@
+### get single comments
+GET http://{{host}}:{{port}}/comments/1
+
+
+### get all comments
+GET http://{{host}}:{{port}}/comments
+
+### filter comments
+GET http://{{host}}:{{port}}/comments?query=
+
+
+
+
+### add new comment
+POST http://{{host}}:{{port}}/comments
+Content-Type: application/json
+
+{
+  "text": "New comments"
+}
+
+### update comment
+PATCH http://{{host}}:{{port}}/comments/1
+Content-Type: application/json
+
+{
+  "text": "New new comments"
+}
+
+### delete comment
+DELETE http://{{host}}:{{port}}/comments/1

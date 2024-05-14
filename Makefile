@@ -25,6 +25,10 @@ tidy:
 wire: tidy
 	cd pkg/wire && wire
 
+.PHONY: run
+run: docker-deps-up
+	cd web && pnpm run dev && go run .
+
 .PHONY: run-frontend
 run-frontend:
 	cd web && pnpm run dev

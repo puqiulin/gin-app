@@ -8,6 +8,7 @@
 
 - [react](https://react.dev/)
 - [next](https://nextjs.org/)
+- [tailwind](https://tailwindcss.com/)
 
 ### Backend
 

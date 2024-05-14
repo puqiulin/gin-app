@@ -1,5 +1,6 @@
 import React from "react";
 import {NavLinks} from "@/src/app/ui/nav-links";
+import "@/src/app/globals.css"
 
 export const metadata = {
     title: {
