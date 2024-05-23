@@ -8,6 +8,7 @@ package wire
 
 import (
 	"gin-app/internal/app"
+	"gin-app/internal/graphql"
 	"gin-app/internal/handler"
 	"gin-app/internal/repository"
 	"gin-app/pkg/config"
@@ -49,9 +50,15 @@ func InitApp() (*app.App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	userRepository := repository.NewUserRepository(bunDB, redisClient, logger)
-	userHandler := handler.NewUserHandler(userRepository, logger)
-	appApp := app.NewApp(appConfig, logger, userHandler)
+	repositoryRepository := repository.NewRepository(bunDB, redisClient, logger)
+	userHandler := handler.NewUserHandler(repositoryRepository, logger)
+	userResolver := graphql.NewUserResolver(repositoryRepository, logger)
+	userField := graphql.NewUserField(userResolver)
+	postResolver := graphql.NewPostResolver(repositoryRepository, logger)
+	postField := graphql.NewPostField(postResolver)
+	rootSchema := graphql.NewRootSchema(userField, postField)
+	graphQLHandler := handler.NewGraphQLHandler(rootSchema, logger)
+	appApp := app.NewApp(appConfig, logger, userHandler, graphQLHandler)
 	return appApp, func() {
 		cleanup2()
 		cleanup()

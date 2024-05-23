@@ -25,6 +25,10 @@ tidy:
 wire: tidy
 	cd pkg/wire && wire
 
+.PHONY: gqlgen
+gqlgen:
+	go run github.com/99designs/gqlgen generate
+
 .PHONY: run
 run: docker-deps-up
 	cd web && pnpm run dev && go run .
@@ -45,18 +49,18 @@ test:
 docker-plugin:
 	docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
 
-.PHONY: docker-deps-up
-docker-deps-up:
+.PHONY: run-docker-deps
+run-docker-deps:
 	docker compose -f docker-compose-deps.yml up -d
 
-.PHONY: docker-deps-down
-docker-deps-down:
+.PHONY: down-docker-deps
+down-docker-deps:
 	docker compose -f docker-compose-deps.yml down
 
-.PHONY: docker-up
-docker-up: docker-deps-up
+.PHONY: run-docker
+run-docker: run-docker-deps
 	docker compose -f docker-compose.yml up -d --build
 
-.PHONY: docker-down
-docker-down:
+.PHONY: down-docker
+down-docker:
 	docker compose -f docker-compose.yml down

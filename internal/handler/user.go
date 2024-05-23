@@ -11,11 +11,12 @@ import (
 )
 
 type UserHandler struct {
-	repo repository.UserRepository
+	repo *repository.Repository
 	l    *logrus.Logger
 }
 
-func NewUserHandler(repo repository.UserRepository, l *logrus.Logger) *UserHandler {
+func NewUserHandler(repo *repository.Repository, l *logrus.Logger) *UserHandler {
+	l.WithField("handler", "UserHandler")
 	return &UserHandler{repo: repo, l: l}
 }
 
@@ -27,7 +28,7 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 		return
 	}
 
-	user, err := h.repo.FindByID(c, id)
+	user, err := h.repo.GetUserByID(c, int64(id))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error.tsx": "User not found"})
 		return

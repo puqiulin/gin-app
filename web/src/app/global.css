@@ -14,6 +14,19 @@
     transition ease-out duration-500
 }
 
+.info-card {
+    @apply
+    p-5
+    m-5
+    w-min
+    text-white
+    bg-black bg-opacity-50 shadow rounded-2xl
+    overflow-hidden
+    hover:shadow-2xl
+    cursor-pointer
+    transition ease-out duration-500
+}
+
 .badge {
     @apply
     bg-blue-400

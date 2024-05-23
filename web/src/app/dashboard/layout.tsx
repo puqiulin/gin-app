@@ -1,13 +1,14 @@
 import React from "react";
 import Login from "@/src/app/dashboard/@login/page";
 
-export default function DashboardLayout({children, user, revenue, notifications}: {
+export default function DashboardLayout({children, login, user, revenue, notifications}: {
     children: React.ReactNode,
     user: React.ReactNode,
+    login: React.ReactNode,
     revenue: React.ReactNode,
     notifications: React.ReactNode
 }) {
-    const isLogin = false
+    const isLogin = true
 
     return isLogin ? <div>
         <div>{children}</div>

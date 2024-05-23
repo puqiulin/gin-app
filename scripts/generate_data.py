@@ -1,8 +1,5 @@
 import random
-
-import records
 from faker import Faker
-from urllib.parse import quote_plus
 import psycopg2
 from psycopg2 import connect, OperationalError
 
@@ -38,10 +35,30 @@ db = create_db()
 
 
 def generate_users(num):
-    users = [(fake.name(), fake.email(), fake.phone_number(), random.choice([0, 1])) for _ in range(num)]
-    query = 'insert into users (name, email,phone,gender) values (%s, %s,%s,%s)'
-    cursor = db.cursor()
+    users = []
+    for i in range(num):
+        id = fake.iana_id()
+        users.append((id, fake.name(), fake.email(), fake.phone_number(), random.choice([0, 1]), fake.ipv4()))
+        generate_posts(random.randrange(1, 100), id)
 
+    query = 'insert into users (id ,name, email,phone,gender,last_login_ip) values (%s, %s, %s,%s,%s,%s)'
+    cursor = db.cursor()
+    try:
+        cursor.executemany(query, users)
+        db.commit()
+        print(f"{cursor.rowcount} records inserted successfully.")
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(f"Error: {error}")
+        db.rollback()
+    finally:
+        cursor.close()
+
+
+def generate_posts(num, user_id):
+    users = [(user_id, fake.name(), fake.paragraph()) for _ in range(num)]
+    query = 'insert into posts (user_id ,title, body) values (%s, %s,%s)'
+
+    cursor = db.cursor()
     try:
         cursor.executemany(query, users)
         db.commit()
