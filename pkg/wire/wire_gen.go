@@ -58,7 +58,8 @@ func InitApp() (*app.App, func(), error) {
 	postField := graphql.NewPostField(postResolver)
 	rootSchema := graphql.NewRootSchema(userField, postField)
 	graphQLHandler := handler.NewGraphQLHandler(rootSchema, logger)
-	appApp := app.NewApp(appConfig, logger, userHandler, graphQLHandler)
+	googleHandler := handler.NewGoogleHandler(repositoryRepository, logger)
+	appApp := app.NewApp(appConfig, logger, userHandler, graphQLHandler, googleHandler)
 	return appApp, func() {
 		cleanup2()
 		cleanup()

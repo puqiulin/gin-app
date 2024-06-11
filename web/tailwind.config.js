@@ -3,6 +3,9 @@ module.exports = {
     content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
     theme: {
         extend: {
+            backgroundImage: {
+                'hot_air_balloon': "url('./public/images/hot_air_balloon.png')",
+            },
             colors: {
                 primary: "#345",
                 secondary: {

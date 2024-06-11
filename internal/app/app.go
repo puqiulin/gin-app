@@ -29,11 +29,12 @@ func NewApp(
 	l *logrus.Logger,
 	uh *myHandler.UserHandler,
 	gh *myHandler.GraphQLHandler,
+	goh *myHandler.GoogleHandler,
 ) *App {
 	g := gin.New()
 
 	g.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://127.0.0.1:3000", "http://127.0.0.1:3001"},
+		AllowOrigins:     []string{"http://127.0.0.1:3000", "http://127.0.0.1:3001", "http://localhost:3000", "http://localhost:3001"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -49,7 +50,7 @@ func NewApp(
 	//panic: '/api/user' in new path '/api/user' conflicts with existing wildcard '/*filepath' in existing prefix '/*filepath'
 	//r.Static("/", "./web/.next")
 
-	route.SetupRouter(g, uh, gh)
+	route.SetupRouter(g, uh, gh, goh)
 
 	return &App{
 		Instance: g,

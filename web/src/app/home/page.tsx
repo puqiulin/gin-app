@@ -10,5 +10,7 @@ export default function Home() {
                 <div> information</div>
             </div>
         </div>
+
+
     </div>
 }

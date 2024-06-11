@@ -40,6 +40,16 @@ export default function Tailwind() {
                 response div
             </div>
 
+            <div style={{
+                width: "0px",
+                height: "0px",
+                borderLeft: "100px solid transparent",
+                borderRight: "100px solid transparent",
+                borderTop: "100px solid transparent",
+                borderBottom: "100px solid black",
+            }}>
+            </div>
+
             <div className="m-2 grid gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 <div className="card">
                     <Image src={image1} alt={"one day"} className="h-36 w-full object-cover"></Image>
