@@ -1,9 +1,10 @@
+"use client"
 import Image from "next/image";
 import head from "@/public/images/head.jpg"
 import Menu from "@/src/app/ui/feishu/menu";
 import {AiOutlineMessage, AiOutlineSetting} from "react-icons/ai"
 
-export default function Root() {
+export default function Page() {
 
 
     return <div className="

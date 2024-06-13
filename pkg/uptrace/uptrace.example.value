@@ -1,0 +1,7 @@
+{
+  "dsn": "xxxx",
+  "service_name": "gin-app",
+  "service_version": "1.0.0",
+  "environment": "127.0.0.1",
+}
+#'{"dsn": "127.0.0.1","service_name": 6379,"service_version": "@123456","environment": 0}'

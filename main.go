@@ -6,8 +6,8 @@ import (
 
 func main() {
 	app, cleanup, err := wire.InitApp()
-
 	defer cleanup()
+
 	if err != nil {
 		panic(err)
 	}

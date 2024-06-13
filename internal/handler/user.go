@@ -5,14 +5,17 @@ import (
 	"strconv"
 
 	"gin-app/internal/repository"
-	"github.com/sirupsen/logrus"
-
+	"gin-app/pkg/uptrace"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type UserHandler struct {
 	repo *repository.Repository
 	l    *logrus.Logger
+	u    *uptrace.Client
 }
 
 func NewUserHandler(repo *repository.Repository, l *logrus.Logger) *UserHandler {
@@ -21,6 +24,16 @@ func NewUserHandler(repo *repository.Repository, l *logrus.Logger) *UserHandler 
 }
 
 func (h *UserHandler) GetUser(c *gin.Context) {
+	ctx := c.Request.Context()
+	span := trace.SpanFromContext(ctx)
+
+	if span.IsRecording() {
+		span.SetAttributes(
+			attribute.String("test key", "test value"),
+			attribute.String("service_name", "user"),
+		)
+	}
+
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
 		h.l.Errorf("Invalid id: %v", id)
@@ -35,4 +48,7 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, user)
+	//otelgin.HTML(c, http.StatusOK, "index", gin.H{
+	//	"user": user,
+	//})
 }

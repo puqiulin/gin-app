@@ -1,5 +1,6 @@
 "use client"
-import {useQuery, gql} from '@apollo/client';
+
+import {gql, useQuery} from '@apollo/client';
 import {Key} from 'react';
 
 export default function Graphql() {

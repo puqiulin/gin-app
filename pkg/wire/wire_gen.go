@@ -7,50 +7,60 @@
 package wire
 
 import (
-	"gin-app/internal/app"
 	"gin-app/internal/graphql"
 	"gin-app/internal/handler"
 	"gin-app/internal/repository"
-	"gin-app/pkg/config"
-	"gin-app/pkg/db"
+	"gin-app/pkg/app"
+	"gin-app/pkg/db/postgres"
+	"gin-app/pkg/db/redis"
 	"gin-app/pkg/etcd"
 	"gin-app/pkg/kafka"
 	"gin-app/pkg/log"
+	"gin-app/pkg/uptrace"
 )
 
 // Injectors from wire.go:
 
 func InitApp() (*app.App, func(), error) {
-	client := etcd.NewEtcdClient()
-	appConfig, err := config.NewAppConfig(client)
+	client := etcd.NewClient()
+	config, err := app.NewConfig(client)
 	if err != nil {
 		return nil, nil, err
 	}
-	kafkaConfig, err := config.NewKafkaConfig(client)
+	uptraceConfig, err := uptrace.NewConfig(client)
+	if err != nil {
+		return nil, nil, err
+	}
+	kafkaConfig, err := kafka.NewConfig(client)
 	if err != nil {
 		return nil, nil, err
 	}
 	writer := kafka.NewKafkaWriter(kafkaConfig)
 	logger := log.NewLog(writer)
-	postgresConfig, err := config.NewPostgresConfig(client)
-	if err != nil {
-		return nil, nil, err
-	}
-	bunDB, cleanup, err := db.NewPostgres(postgresConfig)
-	if err != nil {
-		return nil, nil, err
-	}
-	redisConfig, err := config.NewRedisConfig(client)
+	uptraceClient, cleanup := uptrace.NewClient(uptraceConfig, logger)
+	postgresConfig, err := postgres.NewConfig(client)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	redisClient, cleanup2, err := db.NewRedis(redisConfig)
+	db, cleanup2, err := postgres.NewPostgres(postgresConfig)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	repositoryRepository := repository.NewRepository(bunDB, redisClient, logger)
+	redisConfig, err := redis.NewConfig(client)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	redisClient, cleanup3, err := redis.NewRedis(redisConfig)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	repositoryRepository := repository.NewRepository(db, redisClient, logger)
 	userHandler := handler.NewUserHandler(repositoryRepository, logger)
 	userResolver := graphql.NewUserResolver(repositoryRepository, logger)
 	userField := graphql.NewUserField(userResolver)
@@ -59,8 +69,9 @@ func InitApp() (*app.App, func(), error) {
 	rootSchema := graphql.NewRootSchema(userField, postField)
 	graphQLHandler := handler.NewGraphQLHandler(rootSchema, logger)
 	googleHandler := handler.NewGoogleHandler(repositoryRepository, logger)
-	appApp := app.NewApp(appConfig, logger, userHandler, graphQLHandler, googleHandler)
+	appApp := app.NewApp(config, uptraceConfig, uptraceClient, logger, userHandler, graphQLHandler, googleHandler)
 	return appApp, func() {
+		cleanup3()
 		cleanup2()
 		cleanup()
 	}, nil

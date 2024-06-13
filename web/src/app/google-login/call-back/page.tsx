@@ -1,6 +1,7 @@
 "use client"
 
 import {useEffect, useState} from "react";
+import Image from "next/image"
 
 export default function CallBack() {
     const [loading, setLoading] = useState(true)
@@ -37,7 +38,7 @@ export default function CallBack() {
     return <div className='w-screen h-screen flex justify-center items-center'>
         {loading ? <div>Loading...</div> :
             <div>
-                <img src={userData?.picture} alt={'asd'}></img>
+                <Image src={userData?.picture} alt={'asd'}/>
                 <div>{userData?.email}</div>
                 <div>{userData?.name}</div>
             </div>

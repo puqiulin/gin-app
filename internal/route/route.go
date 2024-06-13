@@ -6,7 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(r *gin.Engine,
+func SetupRouter(
+	r *gin.Engine,
 	userHandler *handler.UserHandler,
 	graphQLHandler *handler.GraphQLHandler,
 	googleHandler *handler.GoogleHandler,

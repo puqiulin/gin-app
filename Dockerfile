@@ -1,6 +1,6 @@
 # build frontend
 FROM node:latest as frontend
-WORKDIR /web
+WORKDIR /app
 
 COPY web/package.json .
 RUN npm install
@@ -9,26 +9,43 @@ COPY web/ .
 RUN npm run build
 
 # build backend
-FROM golang:bookworm AS backend
-ENV TZ=Asia/Shanghai CGO_ENABLED=0 GOOS=linux GO111MODULE=on  GOPROXY=https://goproxy.cn
+FROM golang:latest AS backend
 WORKDIR /app
 
+# This may be caused by the glibc compatibility library of Alpine.
+# So just use Debian to save your life.
+ENV CGO_ENABLED=0
+
+COPY go.mod go.sum ./
+RUN go env -w GOPROXY=https://goproxy.cn,direct && \
+    go mod download && \
+    go mod verify
+
 COPY . .
-RUN --mount=type=cache,target=/root/go/pkg/mod go mod download && go mod verify
-RUN go build -o app
+RUN go build -o app .
 
 # build all
 FROM alpine:latest as finall
+ENV TZ=Asia/Shanghai
 WORKDIR /app
-ENV NODE_ENV production
 
-RUN apk --no-cache add ca-certificates
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories && \
+    apk update &&  \
+#    https://stackoverflow.com/questions/66963068/docker-alpine-executable-binary-not-found-even-if-in-path/66974607#66974607
+#    apk add gcompat &&  \
+    apk add --no-cache nodejs npm ca-certificates && \
+    npm install next
 
-COPY --from=frontend /web/.next /app/web/.next
-COPY --from=frontend /web/public /app/web/public
-ENV NEXT_PUBLIC_DIR=/app/web/.next
+#backend
+COPY --from=backend /app/app .
 
-COPY --from=backend /app/app /app/app
+#frontend
+COPY --from=frontend /app/.next ./.next
+COPY --from=frontend /app/public ./public
+COPY --from=frontend /app/package.json ./package.json
 
-EXPOSE 8888 9999
-CMD ["/app/app"]
+#backend
+COPY .env .
+
+EXPOSE 3001 8888 9999
+CMD ["sh", "-c", "./app & npm start"]

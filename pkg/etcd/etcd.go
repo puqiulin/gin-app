@@ -6,20 +6,18 @@ import (
 	"os"
 	"time"
 
-	"gin-app/pkg/log"
 	"github.com/google/wire"
 	"github.com/joho/godotenv"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
 )
 
-var ProviderSet = wire.NewSet(NewEtcdClient)
+var ProviderSet = wire.NewSet(NewClient)
 
 var config clientv3.Config
 
 func init() {
 	if err := godotenv.Load(); err != nil {
-		log.Log.Error("Loading .env file error.tsx: %s", err)
 		panic("Error loading .env file")
 	}
 
@@ -32,7 +30,7 @@ func init() {
 	}
 }
 
-func NewEtcdClient() *clientv3.Client {
+func NewClient() *clientv3.Client {
 	client, err := clientv3.New(config)
 	if err != nil {
 		panic(err)

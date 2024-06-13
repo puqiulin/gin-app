@@ -45,22 +45,30 @@ run-backend: wire
 test:
 	go test ./...
 
+.PHONY: docker
+docker:
+	docker build .
+
 .PHONY: docker-plugin
 docker-plugin:
 	docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
 
 .PHONY: run-docker-deps
 run-docker-deps:
-	docker compose -f docker-compose-deps.yml up -d
+	docker compose -f docker-compose-deps.yml up -d --force-recreate
 
 .PHONY: down-docker-deps
 down-docker-deps:
 	docker compose -f docker-compose-deps.yml down
 
 .PHONY: run-docker
-run-docker: run-docker-deps
-	docker compose -f docker-compose.yml up -d --build
+run-docker:
+	docker compose -f docker-compose.yml up -d --build --force-recreate
 
 .PHONY: down-docker
 down-docker:
 	docker compose -f docker-compose.yml down
+
+.PHONY: update
+update:
+	cd web && npm i next@latest

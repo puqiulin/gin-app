@@ -3,12 +3,12 @@
 package wire
 
 import (
-	"gin-app/internal/app"
 	"gin-app/internal/graphql"
 	"gin-app/internal/handler"
 	"gin-app/internal/repository"
-	"gin-app/pkg/config"
-	"gin-app/pkg/db"
+	"gin-app/pkg/app"
+	"gin-app/pkg/db/postgres"
+	"gin-app/pkg/db/redis"
 	"gin-app/pkg/etcd"
 	"gin-app/pkg/kafka"
 	"gin-app/pkg/log"
@@ -18,15 +18,15 @@ import (
 
 func InitApp() (*app.App, func(), error) {
 	panic(wire.Build(wire.NewSet(
+		app.ProviderSet,
 		etcd.ProviderSet,
-		config.ProviderSet,
-		db.ProviderSet,
+		postgres.ProviderSet,
+		redis.ProviderSet,
 		uptrace.ProviderSet,
 		repository.ProviderSet,
 		handler.ProviderSet,
 		graphql.ProviderSet,
 		log.ProviderSet,
 		kafka.ProviderSet,
-		app.ProviderSet,
 	)))
 }

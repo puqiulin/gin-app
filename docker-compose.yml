@@ -1,11 +1,10 @@
-version: "3"
-
 services:
   app:
     container_name: gin-app
     restart: always
     build: .
     ports:
+      - "3001:3001"
       - "8888:8888"
       - "9999:9999"
     logging:
