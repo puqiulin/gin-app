@@ -29,5 +29,15 @@
 ## Run
 
 ```shell
-make run
+# run frontend
+# http://127.0.0.1:3001
+make run-frontend
+
+# run backend
+# http://127.0.0.1:9999
+make run-backend
+
+# run as docker
+make run-docker-deps
+make run-docker
 ```
