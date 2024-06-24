@@ -34,7 +34,8 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/re
     apk update &&  \
 #    https://stackoverflow.com/questions/66963068/docker-alpine-executable-binary-not-found-even-if-in-path/66974607#66974607
 #    apk add gcompat &&  \
-    apk add --no-cache npm ca-certificates
+    apk add --no-cache npm ca-certificates && \
+    npm install next
 
 #cpoy from backend
 COPY --from=backend /app/app .

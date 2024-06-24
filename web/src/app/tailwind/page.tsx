@@ -3,7 +3,7 @@ import image1 from "@/public/images/you.png"
 import image2 from "@/public/images/youandme.png"
 import image3 from "@/public/images/grassland.png"
 import image4 from "@/public/images/hot_ari_balloon.png"
-import image5 from "@/public/images/wallhaven-5w6mr5_3840x3072.png"
+import image5 from "@/public/images/hot_ari_balloon.png"
 import Image from 'next/image'
 
 export default function Tailwind() {

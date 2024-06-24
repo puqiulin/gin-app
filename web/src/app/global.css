@@ -39,13 +39,13 @@
     top-0 ml-2 mt-2
 }
 
-.btn {
-    @apply
-    rounded-full px-3 py-2 text-xs uppercase font-bold cursor-pointer tracking-wider
-    transform hover:scale-125
-    transition ease-out duration-300
-    hover:bg-opacity-50
-}
+/*.btn {*/
+/*    @apply*/
+/*    rounded-full px-3 py-2 text-xs uppercase font-bold cursor-pointer tracking-wider*/
+/*    transform hover:scale-125*/
+/*    transition ease-out duration-300*/
+/*    hover:bg-opacity-50*/
+/*}*/
 
 .content {
     @apply

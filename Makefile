@@ -43,6 +43,10 @@ run-backend: wire
 test:
 	go test ./...
 
+.PHONY: docker-login
+docker-login:
+	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
+
 .PHONY: docker
 docker:
 	docker build -t $(APP_NAME):$(APP_VERSION) . && \
@@ -54,7 +58,7 @@ docker-plugin:
 
 .PHONY: run-docker-deps
 run-docker-deps:
-	docker compose -f docker-compose-deps.yml up -d --force-recreate
+	docker compose -f docker-compose-deps.yml up -d
 
 .PHONY: down-docker-deps
 down-docker-deps:
@@ -71,6 +75,7 @@ down-docker:
 .PHONY: update
 update:
 	cd web && npm i next@latest
+
 
 .PHONY: push
 push:
