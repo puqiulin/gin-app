@@ -69,7 +69,8 @@ func InitApp() (*app.App, func(), error) {
 	rootSchema := graphql.NewRootSchema(userField, postField)
 	graphQLHandler := handler.NewGraphQLHandler(rootSchema, logger)
 	googleHandler := handler.NewGoogleHandler(repositoryRepository, logger)
-	appApp := app.NewApp(config, uptraceConfig, uptraceClient, logger, userHandler, graphQLHandler, googleHandler)
+	cacheHandler := handler.NewCacheHandler(repositoryRepository, logger)
+	appApp := app.NewApp(config, uptraceConfig, uptraceClient, logger, userHandler, graphQLHandler, googleHandler, cacheHandler)
 	return appApp, func() {
 		cleanup3()
 		cleanup2()

@@ -46,6 +46,7 @@ func NewApp(
 	uh *myHandler.UserHandler,
 	gh *myHandler.GraphQLHandler,
 	goh *myHandler.GoogleHandler,
+	cah *myHandler.CacheHandler,
 ) *App {
 	g := gin.New()
 
@@ -70,7 +71,7 @@ func NewApp(
 	//panic: '/api/user' in new path '/api/user' conflicts with existing wildcard '/*filepath' in existing prefix '/*filepath'
 	//r.Static("/", "./web/.next")
 
-	route.SetupRouter(g, uh, gh, goh)
+	route.SetupRouter(g, uh, gh, goh, cah)
 
 	return &App{
 		Instance:      g,

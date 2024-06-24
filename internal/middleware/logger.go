@@ -37,7 +37,7 @@ func Logger() gin.HandlerFunc {
 
 		// Ensure Body can be read multiple times
 		if err := c.Request.ParseForm(); err != nil {
-			log.Log.Errorf("ParseForm error.tsx: %v", err)
+			log.Log.Errorf("ParseForm error: %v", err)
 		}
 
 		log.Log.WithFields(logrus.Fields{
@@ -47,7 +47,7 @@ func Logger() gin.HandlerFunc {
 			"method":      c.Request.Method,
 			"path":        c.Request.URL.Path,
 			"params":      c.Request.URL.Query(),
-			"error.tsx":   c.Errors.ByType(gin.ErrorTypePrivate).String(),
+			"error":       c.Errors.ByType(gin.ErrorTypePrivate).String(),
 			"user-agent":  c.Request.UserAgent(),
 			//"response":    responseBody,
 		}).Info("Request details: ")

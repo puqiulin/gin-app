@@ -1,3 +1,5 @@
+include .env
+
 APP_NAME=$(shell basename $$PWD)
 APP_VERSION?=$(shell git log -1 --format=%h)
 ROOT_PATH=$(shell git rev-parse --show-toplevel)
@@ -29,10 +31,6 @@ wire: tidy
 gqlgen:
 	go run github.com/99designs/gqlgen generate
 
-.PHONY: run
-run: docker-deps-up
-	cd web && pnpm run dev && go run .
-
 .PHONY: run-frontend
 run-frontend:
 	cd web && pnpm run dev
@@ -47,7 +45,8 @@ test:
 
 .PHONY: docker
 docker:
-	docker build .
+	docker build -t $(APP_NAME):$(APP_VERSION) . && \
+	docker tag $(APP_NAME):$(APP_VERSION) $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$(APP_NAME):$(APP_VERSION)
 
 .PHONY: docker-plugin
 docker-plugin:
@@ -72,3 +71,12 @@ down-docker:
 .PHONY: update
 update:
 	cd web && npm i next@latest
+
+.PHONY: push
+push:
+	docker push $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$(APP_NAME):$(APP_VERSION)
+
+.PHONY: asd
+asd:
+	@echo $(AWS_ACCOUNT_ID)
+	@echo $(AWS_REGION)

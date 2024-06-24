@@ -1,5 +1,5 @@
 services:
-  redis:
+  gin-app-redis:
     image: redis:latest
     container_name: gin-app-redis
     #    restart: always
@@ -10,7 +10,7 @@ services:
     env_file:
       - config/redis/redis.env
 
-  postgres:
+  gin-app-postgres:
     image: postgres:latest
     container_name: gin-app-postgres
     #    restart: always
@@ -23,7 +23,7 @@ services:
       POSTGRES_PASSWORD: ${PASSWORD}
       TZ: Asia/Shanghai
 
-  mongodb:
+  gin-app-mongodb:
     image: mongo:latest
     container_name: gin-app-mongodb
     #    restart: always
@@ -35,7 +35,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: ${PASSWORD}
 
-  grafana:
+  gin-app-grafana:
     image: grafana/grafana:latest
     container_name: gin-app-grafana
     #    restart: always
@@ -47,7 +47,7 @@ services:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: ${PASSWORD}
 
-  loki:
+  gin-app-loki:
     image: grafana/loki:latest
     container_name: gin-app-loki
     #    restart: always
@@ -58,7 +58,7 @@ services:
     ports:
       - "3100:3100"
 
-  promtail:
+  gin-app-promtail:
     image: grafana/promtail:latest
     container_name: gin-app-promtail
     #    restart: always
@@ -67,7 +67,7 @@ services:
       - ./config/promtail/promtail.yaml:/etc/promtail/promtail.yaml
       - /var/log:/var/log
 
-  etcd:
+  gin-app-etcd:
     image: quay.io/coreos/etcd:latest
     container_name: gin-app-etcd
     #    restart: always
@@ -101,7 +101,7 @@ services:
     volumes:
       - gin-app-etcd:/etcd-data
 
-  e3w:
+  gin-app-e3w:
     image: soyking/e3w:latest
     container_name: gin-app-e3w
     #    restart: always

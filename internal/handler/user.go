@@ -37,13 +37,13 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
 		h.l.Errorf("Invalid id: %v", id)
-		c.JSON(http.StatusBadRequest, gin.H{"error.tsx": "invalid ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ID"})
 		return
 	}
 
 	user, err := h.repo.GetUserByID(c, int64(id))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error.tsx": "User not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "User not found"})
 		return
 	}
 

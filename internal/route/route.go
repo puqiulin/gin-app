@@ -11,6 +11,7 @@ func SetupRouter(
 	userHandler *handler.UserHandler,
 	graphQLHandler *handler.GraphQLHandler,
 	googleHandler *handler.GoogleHandler,
+	cacheHandler *handler.CacheHandler,
 ) {
 	api := r.Group("/api")
 	UserRoutes(api, userHandler)
@@ -20,4 +21,7 @@ func SetupRouter(
 
 	google := api.Group("/google")
 	GoogleRoutes(google, googleHandler)
+
+	cache := api.Group("/cache")
+	CacheRoutes(cache, cacheHandler)
 }

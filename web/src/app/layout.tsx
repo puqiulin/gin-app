@@ -3,6 +3,8 @@ import React from "react";
 import "@/src/app/global.css"
 import bg from "@/public/images/grassland.png"
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
+import {useGlobalStore} from "@/src/stores/global-store";
+import {ToDoListStoreProvider} from "@/src/providers/todo-list-store-provider";
 
 const client = new ApolloClient({
     uri: 'http://127.0.0.1:9999/api/graphql',
@@ -14,10 +16,11 @@ export default function RootLayout({
                                    }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const bag2 = "https://picsum.photos/200/300"
+
+    const theme = useGlobalStore((store) => store.theme)
 
     return (
-        <html lang="en">
+        <html lang="en" data-theme={theme}>
         <meta name="referrer" content="no-referrer-when-downgrade"/>
         <body className="
         {/*bg-gradient-to-br*/}
@@ -33,8 +36,10 @@ export default function RootLayout({
         >
         <main>
             <ApolloProvider client={client}>
-                {/*<NavLinks/>*/}
-                {children}
+                <ToDoListStoreProvider>
+                    {/*<NavLinks/>*/}
+                    {children}
+                </ToDoListStoreProvider>
             </ApolloProvider>
         </main>
         </body>
