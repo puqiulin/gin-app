@@ -2,14 +2,15 @@
 # So just use Debian to save your life.
 
 # build frontend
-FROM node:alpine as frontend
+FROM node:latest AS frontend
 WORKDIR /app
 
-COPY web/package.json .
-RUN npm install
+COPY web/package.json web/package-loock.lock* ./
+RUN npm install --frozen-lockfile
 
-COPY web/ .
-RUN npm run build && npm prune --production
+COPY web/. .
+
+RUN npm run build
 
 # build backend
 FROM golang:alpine AS backend
@@ -25,27 +26,26 @@ RUN go env -w GOPROXY=https://goproxy.cn,direct && \
 COPY . .
 RUN go build -ldflags="-s -w" -o app .
 
-# build all
-FROM alpine:latest as finall
-ENV TZ=Asia/Shanghai
+# build ultimate
+FROM alpine:latest as ultimate
+ENV TZ=Asia/Shanghai NODE_ENV=production
 WORKDIR /app
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories && \
     apk update &&  \
 #    https://stackoverflow.com/questions/66963068/docker-alpine-executable-binary-not-found-even-if-in-path/66974607#66974607
 #    apk add gcompat &&  \
-    apk add --no-cache npm ca-certificates && \
-    npm install next
+    apk add --no-cache ca-certificates tzdata npm && \
+    npm install -g serve
 
-#cpoy from backend
-COPY --from=backend /app/app .
 
-#cpoy from frontend
 COPY --from=frontend /app/.next ./.next
 COPY --from=frontend /app/public ./public
-COPY --from=frontend /app/package.json ./package.json
 
-#backend
+USER nextjs
+
+COPY --from=backend /app/app .
+
 COPY .env .
 
 EXPOSE 3001 8888 9999

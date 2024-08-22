@@ -1,2 +1,4 @@
 node_modules
+.next
+.dockerignore
 src-tauri/target

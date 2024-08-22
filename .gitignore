@@ -1,7 +1,13 @@
 .vscode
 .idea
 config.yml
+
 .env
+.git
+.gitignore
+Dockerfile
+README.md
+test
 
 api/v1/proto/*.go
 gin-app
